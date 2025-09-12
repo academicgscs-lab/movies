@@ -1,4 +1,4 @@
-package movies;
+package org.example;
 
 public class Movie {
     public static final int REGULAR = 0;

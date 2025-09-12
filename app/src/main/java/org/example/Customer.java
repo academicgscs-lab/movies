@@ -1,4 +1,4 @@
-package movies;
+package org.example;
 
 public class Customer {
     private final String _name;

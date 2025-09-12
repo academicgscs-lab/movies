@@ -1,4 +1,4 @@
-package movies;
+package org.example;
 
 public record RentedCustomerMovie(String title, double partialOccurrences) {
 
