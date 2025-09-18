@@ -1,19 +1,26 @@
 package org.example;
 
 import jakarta.xml.bind.JAXBException;
-import org.example.handler.xml.XmlHandler;
-import org.example.handler.xml.model.XCustomer;
+import org.example.managers.StoreManager;
+import org.example.model.Customer;
+import org.example.model.Movie;
 
 import java.io.IOException;
 
 public class App{
     public static void main(String[] args) throws JAXBException, IOException {
-        Customer customer = new Customer("Test");
-        customer.addRental(new Rental(new Movie("Zack Snyder's Justice League", 1), 5));
-        customer.addRental(new Rental(new Movie("Terminator", 0), 1));
-        customer.addRental(new Rental(new Movie("Soul", 2), 3));
-        System.out.println(customer.getRentalRecord());
+        StoreManager storeManager = new StoreManager();
+        Customer customer = storeManager.createCustomer("Test");
 
-        new XmlHandler().marshal(customer);
+        Movie soul = storeManager.createMovie("Soul", 2);
+        Movie terminator = storeManager.createMovie("Terminator", 0);
+        Movie justiceLeague = storeManager.createMovie("Zack Snyder's Justice League", 1);
+
+        storeManager.borrowMovie(justiceLeague.id(), customer, 3);
+        storeManager.borrowMovie(soul.id(), customer, 5);
+        storeManager.borrowMovie(terminator.id(), customer, 1);
+
+        System.out.println(customer.getRentalRecord());
+//        new XmlHandler().marshal(customer);
     }
 }
