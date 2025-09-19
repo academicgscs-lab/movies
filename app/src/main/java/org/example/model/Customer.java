@@ -2,10 +2,11 @@ package org.example.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.utils.Printable;
 
 import java.util.Vector;
 
-public class Customer {
+public class Customer implements Printable {
     @Getter
     private final String id;
 
@@ -49,7 +50,17 @@ public class Customer {
         //add footer lines
         result.append("Amount owed is ").append(debt).append("\n");
         result.append("You earned ").append(frequentRenterPoints).append(" frequent renter points");
+        result.append("\r\n");
         return result.toString();
     }
 
+    @Override
+    public String getTitle() {
+        return id;
+    }
+
+    @Override
+    public String getBody() {
+        return String.format("%s - %s", name, getRentalRecord());
+    }
 }

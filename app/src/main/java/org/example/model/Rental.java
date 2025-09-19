@@ -3,13 +3,14 @@ package org.example.model;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.example.utils.Printable;
 
 import java.util.Objects;
 
 // TODO: validate data such as ID
-public class Rental {
+public class Rental implements Printable {
     @Getter
-    private String id;
+    private final String id;
 
     @Getter
     private final Movie movie;
@@ -25,19 +26,14 @@ public class Rental {
     @Getter
     private int daysRented;
 
-    public Rental (Movie movie, Customer customer){
-        this.movie = movie;
-        this.customer = customer;
-    }
-
-    public Rental (String id, Movie movie, Customer customer, int daysRented){
+    public Rental(String id, Movie movie, Customer customer, int daysRented) {
         this.id = id;
         this.movie = movie;
         this.customer = customer;
         this.daysRented = daysRented;
     }
 
-    public Rental (String id, Movie movie, Customer customer, int daysRented, double debt){
+    public Rental(String id, Movie movie, Customer customer, int daysRented, double debt) {
         this.id = id;
         this.movie = movie;
         this.customer = customer;
@@ -61,5 +57,15 @@ public class Rental {
         }
         Rental customer = (Rental) obj;
         return Objects.equals(id, customer.id);
+    }
+
+    @Override
+    public String getTitle() {
+        return id;
+    }
+
+    @Override
+    public String getBody() {
+        return toString();
     }
 }
