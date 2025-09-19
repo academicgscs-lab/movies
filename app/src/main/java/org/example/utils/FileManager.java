@@ -15,11 +15,9 @@ public class FileManager {
                     .filter(Files::isRegularFile) // Exclude directories
                     .collect(Collectors.toCollection(Vector::new));
 
+            // TODO: throw exception
             if (xmlFileNames.isEmpty()) {
                 System.out.println("No XML files found in the directory.");
-            } else {
-                System.out.println("Found XML files:");
-                xmlFileNames.forEach(System.out::println);
             }
             return xmlFileNames;
 

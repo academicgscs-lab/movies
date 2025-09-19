@@ -52,19 +52,19 @@ public class XCustomer {
         for (Rental rental : customer.getRentals()) {
             xRentals.add(XRental.mapToXRental(rental));
         }
-        return new XCustomer(customer.getId(), customer.getName(), xRentals,
-                customer.getFrequentRenterPoints());
+        return new XCustomer(
+                customer.getId(),
+                customer.getName(),
+                xRentals,
+                customer.getFrequentRenterPoints()
+        );
     }
 
-    public static Customer mapToCustomer(XCustomer xCustomer, CustomerManager customerManager, MovieManager movieManager) {
-        Vector<Rental> rentals = new Vector<>();
-        for (XRental rental : xCustomer.getRentals()) {
-            rentals.add(XRental.mapToRental(customerManager, movieManager, rental));
-        }
+    public static Customer mapToCustomer(XCustomer xCustomer) {
         return new Customer(
                 xCustomer.getId(),
                 xCustomer.getName(),
-                rentals,
+                new Vector<>(),
                 xCustomer.getFrequentRenterPoints()
         );
     }

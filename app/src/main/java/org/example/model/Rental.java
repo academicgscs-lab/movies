@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+import java.util.Objects;
+
 // TODO: validate data such as ID
 public class Rental {
     @Getter
@@ -47,5 +49,17 @@ public class Rental {
     @NonNull
     public String toString() {
         return String.format("\t%s\t%s%n", movie.title(), debt);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Rental customer = (Rental) obj;
+        return Objects.equals(id, customer.id);
     }
 }

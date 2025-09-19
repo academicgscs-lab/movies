@@ -55,7 +55,7 @@ public class XmlHandler {
         return new File(String.format("%s/%s/%s.xml", XML_PATH, path, fileName));
     }
 
-    public Vector<Movie> getMovies() throws JAXBException, IOException {
+    public Vector<Movie> loadMovies() throws JAXBException, IOException {
         Vector<Movie> movies = new Vector<>();
         JAXBContext context = JAXBContext.newInstance(XMovie.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -67,19 +67,19 @@ public class XmlHandler {
         return movies;
     }
 
-    public Vector<Customer> getCostumer(CustomerManager customerManager, MovieManager movieManager) throws JAXBException, IOException {
+    public Vector<Customer> loadCustomers() throws JAXBException, IOException {
         Vector<Customer> items = new Vector<>();
         JAXBContext context = JAXBContext.newInstance(XCustomer.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         Vector<Path> files = FileManager.listFiles(String.format("%s/%s", XML_PATH, XCustomer.HOME));
         for (Path file : files) {
             XCustomer item = (XCustomer) unmarshaller.unmarshal(file.toFile());
-            items.add(XCustomer.mapToCustomer(item, customerManager, movieManager));
+            items.add(XCustomer.mapToCustomer(item));
         }
         return items;
     }
 
-    public Vector<Rental> getRentals(CustomerManager customerManager, MovieManager movieManager) throws JAXBException, IOException {
+    public Vector<Rental> loadRentals(CustomerManager customerManager, MovieManager movieManager) throws JAXBException, IOException {
         Vector<Rental> items = new Vector<>();
         JAXBContext context = JAXBContext.newInstance(XRental.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
