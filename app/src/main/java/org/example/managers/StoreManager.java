@@ -1,5 +1,9 @@
 package org.example.managers;
 
+import lombok.Getter;
+import org.example.managers.bonus.NewReleaseBonusChecker;
+import org.example.managers.bonus.KidBonusChecker;
+import org.example.managers.bonus.BonusChecker;
 import org.example.managers.model.CustomerManager;
 import org.example.managers.model.MovieManager;
 import org.example.model.Customer;
@@ -7,15 +11,25 @@ import org.example.model.Movie;
 import org.example.model.Rental;
 import org.example.utils.UUUIDGenerator;
 
+import java.util.Vector;
+
 public class StoreManager {
     private final RentalManager rentalManager;
+
+    @Getter
     private final CustomerManager customerManager;
+
+    @Getter
     private final MovieManager movieManager;
 
-    public StoreManager(CustomerManager customerManager, MovieManager movieManager) {
-        this.customerManager = customerManager;
-        this.movieManager = movieManager;
-        rentalManager = new RentalManager();
+    public StoreManager() {
+        this.customerManager = new CustomerManager();
+        this.movieManager = new  MovieManager();
+
+        Vector<BonusChecker> strategies = new Vector<>();
+        strategies.add(new NewReleaseBonusChecker());
+        strategies.add(new KidBonusChecker());
+        rentalManager = new RentalManager(strategies);
     }
 
     public Customer createCustomer(String name){

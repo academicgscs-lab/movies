@@ -1,9 +1,17 @@
 package org.example.managers;
 
+import org.example.managers.bonus.BonusChecker;
 import org.example.model.Movie;
 import org.example.model.Rental;
 
+import java.util.Vector;
+
 public class RentalManager {
+    private final Vector<BonusChecker> bonusCheckers;
+
+    public RentalManager(Vector<BonusChecker> bonusCheckers) {
+        this.bonusCheckers = bonusCheckers;
+    }
 
     public void register(Rental rental) {
         double debt = calculateDebt(rental);
@@ -38,17 +46,10 @@ public class RentalManager {
 
     private int calculateFrequentRentalPoints(Rental rental) {
         int frequentRenterPoints = rental.getCustomer().getFrequentRenterPoints();
-
-        // add frequent renter points for Children and New Release
-        // keep in mind Regular movies don't have frequent renter points
-        int priceCode = rental.getMovie().priceCode();
-        if (priceCode == Movie.NEW_RELEASE || priceCode == Movie.CHILDREN) {
-            frequentRenterPoints++;
-        }
-
-        // add bonus for a two day new release rental
-        if (priceCode == Movie.NEW_RELEASE && rental.getDaysRented() > 1) {
-            frequentRenterPoints++;
+        for (BonusChecker bonusChecker : bonusCheckers) {
+            if (bonusChecker.check(rental)) {
+                frequentRenterPoints++;
+            }
         }
         return frequentRenterPoints;
     }

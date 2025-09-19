@@ -14,11 +14,11 @@ public class App {
 
     public static void main(String[] args) throws IOException, JAXBException {
         XmlHandler xmlHandler = new XmlHandler();
-        CustomerManager customerManager = new CustomerManager();
-        MovieManager movieManager = new MovieManager();
+        StoreManager storeManager = new StoreManager();
+        CustomerManager customerManager = storeManager.getCustomerManager();
+        MovieManager movieManager = storeManager.getMovieManager();
         xmlHandler.populate(customerManager, movieManager);
 
-        StoreManager storeManager = new StoreManager(customerManager, movieManager);
         Mocker.populateStore(storeManager);
 
         new Controller(customerManager, movieManager).run();

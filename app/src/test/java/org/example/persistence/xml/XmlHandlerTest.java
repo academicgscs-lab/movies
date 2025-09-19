@@ -10,7 +10,6 @@ import org.example.model.Rental;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Vector;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,10 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class XmlHandlerTest {
     @Test
     void getMovie() {
-        CustomerManager customerManager = new CustomerManager();
-        MovieManager movieManager = new MovieManager();
-
-        StoreManager storeManager = new StoreManager(customerManager, movieManager);
+        StoreManager storeManager = new StoreManager();
         Movie soul = storeManager.createMovie("Soul", 2);
         Movie terminator = storeManager.createMovie("Terminator", 0);
         Movie justiceLeague = storeManager.createMovie("Zack Snyder's Justice League", 1);
@@ -47,18 +43,19 @@ class XmlHandlerTest {
 
     @Test
     void getRental() {
-        CustomerManager customerManager = new CustomerManager();
-        MovieManager movieManager = new MovieManager();
-        StoreManager storeManager = new StoreManager(customerManager, movieManager);
+        StoreManager storeManager = new StoreManager();
+        CustomerManager customerManager = storeManager.getCustomerManager();
+        MovieManager movieManager = storeManager.getMovieManager();
+
         Customer customer = storeManager.createCustomer("Test");
 
         Movie soul = storeManager.createMovie("Soul", 2);
         Movie terminator = storeManager.createMovie("Terminator", 0);
         Movie justiceLeague = storeManager.createMovie("Zack Snyder's Justice League", 1);
 
-        storeManager.borrowMovie(justiceLeague.id(), customer, 3);
-        storeManager.borrowMovie(soul.id(), customer, 5);
-        storeManager.borrowMovie(terminator.id(), customer, 1);
+        storeManager.borrowMovie(justiceLeague.id(), customer.getId(), 3);
+        storeManager.borrowMovie(soul.id(), customer.getId(), 5);
+        storeManager.borrowMovie(terminator.id(), customer.getId(), 1);
 
 
         // persistence
@@ -94,18 +91,18 @@ class XmlHandlerTest {
 
     @Test
     void getCustomer() {
-        CustomerManager customerManager = new CustomerManager();
-        MovieManager movieManager = new MovieManager();
-        StoreManager storeManager = new StoreManager(customerManager, movieManager);
+        StoreManager storeManager = new StoreManager();
+        CustomerManager customerManager = storeManager.getCustomerManager();
+        MovieManager movieManager = storeManager.getMovieManager();
         Customer customer = storeManager.createCustomer("Test");
 
         Movie soul = storeManager.createMovie("Soul", 2);
         Movie terminator = storeManager.createMovie("Terminator", 0);
         Movie justiceLeague = storeManager.createMovie("Zack Snyder's Justice League", 1);
 
-        storeManager.borrowMovie(justiceLeague.id(), customer, 3);
-        storeManager.borrowMovie(soul.id(), customer, 5);
-        storeManager.borrowMovie(terminator.id(), customer, 1);
+        storeManager.borrowMovie(justiceLeague.id(), customer.getId(), 3);
+        storeManager.borrowMovie(soul.id(), customer.getId(), 5);
+        storeManager.borrowMovie(terminator.id(), customer.getId(), 1);
 
         // persistence
         XmlHandler xmlHandler = new XmlHandler();
@@ -142,18 +139,16 @@ class XmlHandlerTest {
     @Test
     // assumes there is already xml data
     void coldLoadTest(){
-        CustomerManager controlCustomerManager = new CustomerManager();
-        MovieManager controlMovieManager = new MovieManager();
-        StoreManager storeManager = new StoreManager(controlCustomerManager, controlMovieManager);
+        StoreManager storeManager = new StoreManager();
         Customer john = storeManager.createCustomer("Test");
 
         Movie soul = storeManager.createMovie("Soul", 2);
         Movie terminator = storeManager.createMovie("Terminator", 0);
         Movie justiceLeague = storeManager.createMovie("Zack Snyder's Justice League", 1);
 
-        storeManager.borrowMovie(justiceLeague.id(), john, 3);
-        storeManager.borrowMovie(soul.id(), john, 5);
-        storeManager.borrowMovie(terminator.id(), john, 1);
+        storeManager.borrowMovie(justiceLeague.id(), john.getId(), 3);
+        storeManager.borrowMovie(soul.id(), john.getId(), 5);
+        storeManager.borrowMovie(terminator.id(), john.getId(), 1);
 
         // persistence
         XmlHandler xmlHandler = new XmlHandler();
@@ -192,7 +187,7 @@ class XmlHandlerTest {
             }
 
             Customer[] customers = customerManager.getItems().values().toArray(new Customer[0]);
-            Customer[] controlCustomers = controlCustomerManager.getItems().values().toArray(new Customer[0]);
+            Customer[] controlCustomers = storeManager.getCustomerManager().getItems().values().toArray(new Customer[0]);
 
             // basic comparison
             assertEquals(controlCustomers.length, customers.length);
@@ -210,9 +205,7 @@ class XmlHandlerTest {
                 Vector<Rental> controlRentals = controlCustomer.getRentals();
                 assertEquals(rentals.size(), controlRentals.size());
 
-                controlRentals.forEach(item -> {
-                    assertTrue(rentals.contains(item));
-                });
+                controlRentals.forEach(item -> assertTrue(rentals.contains(item)));
             }
 
         } catch (JAXBException | IOException e) {
