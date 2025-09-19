@@ -5,7 +5,7 @@ import org.example.model.Customer;
 import org.example.model.Movie;
 
 public class Mocker {
-    public static void populateStore(StoreManager storeManager){
+    public static void mock(StoreManager storeManager){
         Customer customer = storeManager.createCustomer("Jhon");
         Movie soul = storeManager.createMovie("Soul", 2);
         Movie terminator = storeManager.createMovie("Terminator", 0);

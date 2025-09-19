@@ -2,7 +2,6 @@ package org.example.persistence.xml;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 import org.example.App;
 import org.example.managers.model.CustomerManager;
@@ -15,45 +14,13 @@ import org.example.persistence.xml.model.XMovie;
 import org.example.persistence.xml.model.XRental;
 import org.example.utils.FileManager;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Vector;
 
 // TODO: refactor to use a creational design pattern
-public class XmlHandler {
+class Loader {
     public static String XML_PATH = String.format("%s/persistence/xml/", App.LOCAL_PATH);
-
-    public void marshal(Movie movie) throws JAXBException, IOException {
-        JAXBContext context = JAXBContext.newInstance(XMovie.class);
-        Marshaller marshaller = context.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
-        XMovie xMovie = XMovie.mapToXMovie(movie);
-        marshaller.marshal(xMovie, createFile(XMovie.HOME, xMovie.getId()));
-    }
-
-    public void marshal(Customer customer) throws JAXBException, IOException {
-        JAXBContext context = JAXBContext.newInstance(XCustomer.class);
-        Marshaller marshaller = context.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
-        XCustomer xCustomer = XCustomer.mapToXCustomer(customer);
-        marshaller.marshal(xCustomer, createFile(XCustomer.HOME, xCustomer.getId()));
-    }
-
-    public void marshal(Rental rental) throws JAXBException, IOException {
-        JAXBContext context = JAXBContext.newInstance(XRental.class);
-        Marshaller marshaller = context.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
-        XRental xRental = XRental.mapToXRental(rental);
-        marshaller.marshal(xRental, createFile(XRental.HOME, xRental.getId()));
-    }
-
-    private File createFile(String path, String fileName) {
-        return new File(String.format("%s/%s/%s.xml", XML_PATH, path, fileName));
-    }
 
     public Vector<Movie> loadMovies() throws JAXBException, IOException {
         Vector<Movie> movies = new Vector<>();
@@ -91,33 +58,18 @@ public class XmlHandler {
         return items;
     }
 
-    public void populate(CustomerManager customerManager, MovieManager movieManager) throws JAXBException, IOException {
-        loadMovies().forEach(movie -> movieManager.addItem(movie.id(), movie));
-        loadCustomers().forEach(item -> customerManager.addItem(item.getId(), item));
-        Vector<Rental> rentals = loadRentals(customerManager, movieManager);
-        for (Rental rental : rentals) {
-            rental.getCustomer().getRentals().add(rental);
+    public void populate(CustomerManager customerManager, MovieManager movieManager)  {
+        try {
+            loadMovies().forEach(movie -> movieManager.addItem(movie.id(), movie));
+            loadCustomers().forEach(item -> customerManager.addItem(item.getId(), item));
+            Vector<Rental> rentals = loadRentals(customerManager, movieManager);
+            for (Rental rental : rentals) {
+                rental.getCustomer().getRentals().add(rental);
+            }
+        }catch (JAXBException e) {
+            System.out.println("Error while populating"+e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Path not found"+e.getMessage());
         }
     }
-
-    public void persist(MovieManager movieManager)  {
-       movieManager.getItems().values().forEach(item -> {
-           try {
-               marshal(item);
-           } catch (JAXBException | IOException e) {
-               throw new RuntimeException(e);
-           }
-       });
-    }
-
-    public void persist(CustomerManager manager)  {
-        manager.getItems().values().forEach(item -> {
-            try {
-                marshal(item);
-            } catch (JAXBException | IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
-
 }
