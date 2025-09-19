@@ -4,8 +4,12 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+import java.util.Objects;
+
 // TODO: validate data such as ID
 public class Rental {
+    @Getter
+    private String id;
 
     @Getter
     private final Movie movie;
@@ -21,20 +25,41 @@ public class Rental {
     @Getter
     private int daysRented;
 
-    public Rental (Movie _movie, Customer _customer){
-        this.movie = _movie;
-        this.customer = _customer;
+    public Rental (Movie movie, Customer customer){
+        this.movie = movie;
+        this.customer = customer;
     }
 
-    public Rental (Movie _movie, Customer _customer, int daysRented){
-        this.movie = _movie;
-        this.customer = _customer;
+    public Rental (String id, Movie movie, Customer customer, int daysRented){
+        this.id = id;
+        this.movie = movie;
+        this.customer = customer;
         this.daysRented = daysRented;
+    }
+
+    public Rental (String id, Movie movie, Customer customer, int daysRented, double debt){
+        this.id = id;
+        this.movie = movie;
+        this.customer = customer;
+        this.daysRented = daysRented;
+        this.debt = debt;
     }
 
     @Override
     @NonNull
     public String toString() {
         return String.format("\t%s\t%s%n", movie.title(), debt);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Rental customer = (Rental) obj;
+        return Objects.equals(id, customer.id);
     }
 }

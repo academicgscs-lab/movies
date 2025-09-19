@@ -7,8 +7,11 @@ import java.util.Vector;
 
 public class Customer {
     @Getter
-    private final String _id;
-    private final String _name;
+    private final String id;
+
+    @Getter
+    private final String name;
+
     @Getter
     private final Vector<Rental> rentals;
 
@@ -17,9 +20,16 @@ public class Customer {
     private int frequentRenterPoints;
 
     public Customer(String id, String name) {
-        _id = id;
-        _name = name;
+        this.id = id;
+        this.name = name;
         this.rentals = new Vector<>();
+    }
+
+    public Customer(String id, String name, Vector<Rental> rentals, int frequentRenterPoints ) {
+        this.frequentRenterPoints = frequentRenterPoints;
+        this.rentals = rentals;
+        this.name = name;
+        this.id = id;
     }
 
     public void addRental(Rental rental) {
@@ -27,7 +37,7 @@ public class Customer {
     }
 
     public String getRentalRecord() {
-        StringBuilder result = new StringBuilder(String.format("Rental Record for %s%n", _name));
+        StringBuilder result = new StringBuilder(String.format("Rental Record for %s%n", name));
 
         // add rented movies
         double debt = 0;

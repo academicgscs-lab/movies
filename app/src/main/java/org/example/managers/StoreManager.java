@@ -1,34 +1,45 @@
 package org.example.managers;
 
+import org.example.managers.model.CustomerManager;
+import org.example.managers.model.MovieManager;
 import org.example.model.Customer;
 import org.example.model.Movie;
 import org.example.model.Rental;
 import org.example.utils.UUUIDGenerator;
 
-import java.util.HashMap;
-
 public class StoreManager {
-    private final HashMap<String, Movie> movies = new HashMap<>();
-    private final RentalManager rentalManager = new RentalManager();
+    private final RentalManager rentalManager;
+    private final CustomerManager customerManager;
+    private final MovieManager movieManager;
 
+    public StoreManager(CustomerManager customerManager, MovieManager movieManager) {
+        this.customerManager = customerManager;
+        this.movieManager = movieManager;
+        rentalManager = new RentalManager();
+    }
 
     public Customer createCustomer(String name){
-        return new Customer(UUUIDGenerator.generateUniqueId(), name);
+        Customer customer = new Customer(UUUIDGenerator.generateUniqueId(), name);
+        customerManager.addItem(customer.getId(), customer);
+        return customer;
     }
 
     public Movie createMovie(String title, int priceCode){
         Movie movie = new Movie(UUUIDGenerator.generateUniqueId(), title, priceCode);
-        movies.put(movie.id(), movie);
+        movieManager.addItem(movie.id(), movie);
         return movie;
     }
 
-    public void borrowMovie(String movieId, Customer customer){
-        Rental rental = new Rental(movies.get(movieId), customer);
-        rentalManager.register(rental);
-    }
+    public void borrowMovie(String movieId, String customerId, int daysRented){
+        // TODO: check if it exists
+        Movie movie = movieManager.getItem(movieId);
+        Customer customer = customerManager.getItem(customerId);
 
-    public void borrowMovie(String movieId, Customer customer, int daysRented){
-        Rental rental = new Rental(movies.get(movieId), customer, daysRented);
+        Rental rental = new Rental(
+                UUUIDGenerator.generateUniqueId(),
+                movie,
+                customer,
+                daysRented);
         rentalManager.register(rental);
     }
 }
