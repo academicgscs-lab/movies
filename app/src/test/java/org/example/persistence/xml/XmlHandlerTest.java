@@ -60,7 +60,6 @@ class XmlHandlerTest {
         storeManager.borrowMovie(soul.id(), customer, 5);
         storeManager.borrowMovie(terminator.id(), customer, 1);
 
-        System.out.println(customer.getRentalRecord());
 
         // persistence
         XmlHandler xmlHandler = new XmlHandler();
@@ -107,8 +106,6 @@ class XmlHandlerTest {
         storeManager.borrowMovie(justiceLeague.id(), customer, 3);
         storeManager.borrowMovie(soul.id(), customer, 5);
         storeManager.borrowMovie(terminator.id(), customer, 1);
-
-        System.out.println(customer.getRentalRecord());
 
         // persistence
         XmlHandler xmlHandler = new XmlHandler();

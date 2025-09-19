@@ -10,12 +10,15 @@ import org.example.persistence.xml.XmlHandler;
 
 import java.io.IOException;
 
-public class App{
+public class App {
     public static String LOCAL_PATH = System.getProperty("user.dir");
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, JAXBException {
+        XmlHandler xmlHandler = new XmlHandler();
         CustomerManager customerManager = new CustomerManager();
         MovieManager movieManager = new MovieManager();
+        xmlHandler.populate(customerManager, movieManager);
+
         StoreManager storeManager = new StoreManager(customerManager, movieManager);
         Customer customer = storeManager.createCustomer("Test");
 
@@ -23,24 +26,12 @@ public class App{
         Movie terminator = storeManager.createMovie("Terminator", 0);
         Movie justiceLeague = storeManager.createMovie("Zack Snyder's Justice League", 1);
 
-        storeManager.borrowMovie(justiceLeague.id(), customer, 3);
-        storeManager.borrowMovie(soul.id(), customer, 5);
-        storeManager.borrowMovie(terminator.id(), customer, 1);
+        storeManager.borrowMovie(justiceLeague.id(), customer.getId(), 3);
+        storeManager.borrowMovie(soul.id(), customer.getId(), 5);
+        storeManager.borrowMovie(terminator.id(), customer.getId(), 1);
 
-        System.out.println(customer.getRentalRecord());
-        XmlHandler xmlHandler = new XmlHandler();
-        try {
-            xmlHandler.marshal(soul);
-            xmlHandler.marshal(customer);
-            customer.getRentals().forEach(rental -> {
-                try {
-                    xmlHandler.marshal(rental);
-                } catch (JAXBException | IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        } catch (JAXBException e) {
-            throw new RuntimeException(e);
-        }
+        xmlHandler.persist(customerManager);
+        xmlHandler.persist(movieManager);
+        customerManager.getItems().values().forEach(c -> System.out.println(c.getRentalRecord()));
     }
 }

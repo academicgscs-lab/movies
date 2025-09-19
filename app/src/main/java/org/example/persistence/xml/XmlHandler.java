@@ -90,4 +90,34 @@ public class XmlHandler {
         }
         return items;
     }
+
+    public void populate(CustomerManager customerManager, MovieManager movieManager) throws JAXBException, IOException {
+        loadMovies().forEach(movie -> movieManager.addItem(movie.id(), movie));
+        loadCustomers().forEach(item -> customerManager.addItem(item.getId(), item));
+        Vector<Rental> rentals = loadRentals(customerManager, movieManager);
+        for (Rental rental : rentals) {
+            rental.getCustomer().getRentals().add(rental);
+        }
+    }
+
+    public void persist(MovieManager movieManager)  {
+       movieManager.getItems().values().forEach(item -> {
+           try {
+               marshal(item);
+           } catch (JAXBException | IOException e) {
+               throw new RuntimeException(e);
+           }
+       });
+    }
+
+    public void persist(CustomerManager manager)  {
+        manager.getItems().values().forEach(item -> {
+            try {
+                marshal(item);
+            } catch (JAXBException | IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
 }
