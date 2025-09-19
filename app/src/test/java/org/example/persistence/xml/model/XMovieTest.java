@@ -2,13 +2,13 @@ package org.example.persistence.xml.model;
 
 import jakarta.xml.bind.JAXBException;
 import org.example.managers.StoreManager;
-import org.example.managers.model.MovieManager;
 import org.example.model.Movie;
-import org.example.persistence.xml.XmlHandler;
+import org.example.persistence.StorageHandler;
+import org.example.persistence.xml.XmlStorageHandler;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Vector;
+import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,13 +16,12 @@ class XMovieTest {
     @Test
     void loadMovieTest() throws JAXBException, IOException {
         StoreManager storeManager = new StoreManager();
-        MovieManager movieManager = storeManager.getMovieManager();
         Movie createdSoul = storeManager.createMovie("Soul", 2);
 
-        XmlHandler xmlHandler = new XmlHandler();
-        xmlHandler.persist(movieManager);
+        StorageHandler handler = new XmlStorageHandler();
+        handler.load(storeManager);
+        Collection<Movie> movies = storeManager.getMovieManager().getItems().values();
 
-        Vector<Movie> movies = xmlHandler.loadMovies();
         assertTrue(movies.contains(createdSoul));
 
         Movie loadedSoul = null;

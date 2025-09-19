@@ -3,9 +3,7 @@ package org.example.persistence.xml;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import org.example.App;
-import org.example.managers.StoreManager;
 import org.example.managers.model.CustomerManager;
-import org.example.managers.model.Manager;
 import org.example.managers.model.MovieManager;
 import org.example.model.Customer;
 import org.example.model.Movie;
@@ -15,7 +13,6 @@ import org.example.persistence.xml.model.XMovie;
 import org.example.persistence.xml.model.XRental;
 
 import java.io.File;
-import java.io.IOException;
 
 class Marshaller {
     public static String XML_PATH = String.format("%s/persistence/xml/", App.LOCAL_PATH);
@@ -48,13 +45,19 @@ class Marshaller {
         }
     }
 
-    public void marshal(Rental rental) throws JAXBException, IOException {
-        JAXBContext context = JAXBContext.newInstance(XRental.class);
-        jakarta.xml.bind.Marshaller marshaller = context.createMarshaller();
-        marshaller.setProperty(jakarta.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+    public void marshal(Rental rental) {
+        try {
+            JAXBContext context = JAXBContext.newInstance(XRental.class);
+            jakarta.xml.bind.Marshaller marshaller = context.createMarshaller();
+            marshaller.setProperty(jakarta.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-        XRental xRental = XRental.mapToXRental(rental);
-        marshaller.marshal(xRental, createFile(XRental.HOME, xRental.getId()));
+            XRental xRental = XRental.mapToXRental(rental);
+            marshaller.marshal(xRental, createFile(XRental.HOME, xRental.getId()));
+
+        } catch (JAXBException e) {
+            System.out.println("Error marshalling Customer " + rental.getTitle());
+        }
+
     }
 
     private File createFile(String path, String fileName) {
@@ -64,5 +67,6 @@ class Marshaller {
     public void marshal(CustomerManager customerManager, MovieManager movieManager) {
         movieManager.getItems().values().forEach(this::marshal);
         customerManager.getItems().values().forEach(this::marshal);
+        customerManager.getItems().values().forEach(c -> c.getRentals().forEach(this::marshal));
     }
 }
