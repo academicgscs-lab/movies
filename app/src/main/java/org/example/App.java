@@ -1,15 +1,22 @@
 package org.example;
 
 import jakarta.xml.bind.JAXBException;
+import org.example.managers.model.CustomerManager;
 import org.example.managers.StoreManager;
+import org.example.managers.model.MovieManager;
 import org.example.model.Customer;
 import org.example.model.Movie;
+import org.example.persistence.xml.XmlHandler;
 
 import java.io.IOException;
 
 public class App{
-    public static void main(String[] args) throws JAXBException, IOException {
-        StoreManager storeManager = new StoreManager();
+    public static String LOCAL_PATH = System.getProperty("user.dir");
+
+    public static void main(String[] args) throws IOException {
+        CustomerManager customerManager = new CustomerManager();
+        MovieManager movieManager = new MovieManager();
+        StoreManager storeManager = new StoreManager(customerManager, movieManager);
         Customer customer = storeManager.createCustomer("Test");
 
         Movie soul = storeManager.createMovie("Soul", 2);
@@ -21,6 +28,19 @@ public class App{
         storeManager.borrowMovie(terminator.id(), customer, 1);
 
         System.out.println(customer.getRentalRecord());
-//        new XmlHandler().marshal(customer);
+        XmlHandler xmlHandler = new XmlHandler();
+        try {
+            xmlHandler.marshal(soul);
+            xmlHandler.marshal(customer);
+            customer.getRentals().forEach(rental -> {
+                try {
+                    xmlHandler.marshal(rental);
+                } catch (JAXBException | IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

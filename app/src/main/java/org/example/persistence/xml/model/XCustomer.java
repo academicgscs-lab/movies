@@ -6,6 +6,8 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.managers.model.CustomerManager;
+import org.example.managers.model.MovieManager;
 import org.example.model.Customer;
 import org.example.model.Rental;
 
@@ -34,11 +36,11 @@ public class XCustomer {
     @XmlElement(name = "rental")
     @Getter
     @Setter
-    private Vector<Rental> rentals;
+    private Vector<XRental> rentals;
 
     public XCustomer() {}
 
-    public XCustomer(String id, String name, Vector<Rental> rentals, int frequentRenterPoints) {
+    public XCustomer(String id, String name, Vector<XRental> rentals, int frequentRenterPoints) {
         this.id = id;
         this.name = name;
         this.rentals = rentals;
@@ -46,7 +48,24 @@ public class XCustomer {
     }
 
     public static XCustomer mapToXCustomer(Customer customer) {
-        return new XCustomer(customer.getId(), customer.getName(), customer.getRentals(),
+        Vector<XRental> xRentals = new Vector<>();
+        for (Rental rental : customer.getRentals()) {
+            xRentals.add(XRental.mapToXRental(rental));
+        }
+        return new XCustomer(customer.getId(), customer.getName(), xRentals,
                 customer.getFrequentRenterPoints());
+    }
+
+    public static Customer mapToCustomer(XCustomer xCustomer, CustomerManager customerManager, MovieManager movieManager) {
+        Vector<Rental> rentals = new Vector<>();
+        for (XRental rental : xCustomer.getRentals()) {
+            rentals.add(XRental.mapToRental(customerManager, movieManager, rental));
+        }
+        return new Customer(
+                xCustomer.getId(),
+                xCustomer.getName(),
+                rentals,
+                xCustomer.getFrequentRenterPoints()
+        );
     }
 }

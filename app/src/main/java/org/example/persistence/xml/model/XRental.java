@@ -6,6 +6,8 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.managers.model.CustomerManager;
+import org.example.managers.model.MovieManager;
 import org.example.model.Rental;
 
 @XmlRootElement(name = "rental")
@@ -21,12 +23,12 @@ public class XRental {
     @XmlElement
     @Getter
     @Setter
-    private XMovie movie;
+    public String movieId;
 
     @XmlElement
     @Getter
     @Setter
-    private XCustomer customer;
+    public String customerId;
 
     @XmlElement
     @Setter
@@ -41,19 +43,28 @@ public class XRental {
     public XRental() {
     }
 
-    public XRental(String id, XMovie movie, XCustomer customer, double debt, int daysRented) {
+    public XRental(String id, String movieId, String customerId,  double debt, int daysRented) {
         this.id = id;
-        this.movie = movie;
-        this.customer = customer;
+        this.movieId = movieId;
+        this.customerId = customerId;
         this.debt = debt;
         this.daysRented = daysRented;
     }
 
     public static XRental mapToXRental(Rental rental) {
         return new XRental(rental.getId(),
-                XMovie.mapToXMovie(rental.getMovie()),
-                XCustomer.mapToXCustomer(rental.getCustomer()),
+                rental.getMovie().id(),
+                rental.getCustomer().getId(),
                 rental.getDebt(),
                 rental.getDaysRented());
+    }
+
+    public static Rental mapToRental(CustomerManager customerManager, MovieManager movieManager, XRental xRental) {
+        return new Rental(xRental.getId(),
+                movieManager.getItem(xRental.getMovieId()),
+                customerManager.getItem(xRental.getCustomerId()),
+                xRental.getDaysRented(),
+                xRental.getDebt()
+        );
     }
 }

@@ -23,11 +23,11 @@ public class XMovie {
     @XmlElement
     @Getter
     @Setter
-    public double priceCode;
+    public int priceCode;
 
     public XMovie() {}
 
-    public XMovie(String id, String name, double priceCode) {
+    public XMovie(String id, String name, int priceCode) {
         this.id = id;
         this.name = name;
         this.priceCode = priceCode;
@@ -35,6 +35,10 @@ public class XMovie {
 
     public static XMovie mapToXMovie(Movie movie) {
         return new XMovie(movie.id(), movie.title(), movie.priceCode());
+    }
+
+    public static Movie mapToMovie(XMovie movie) {
+        return new Movie(movie.getId(), movie.getName(), movie.getPriceCode());
     }
 
 }
