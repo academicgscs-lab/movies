@@ -1,5 +1,6 @@
 package org.example.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,6 +9,8 @@ import java.util.Optional;
 import java.util.Vector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.example.persistence.xml.XmlStorageHandler.XML_PATH;
 
 public class FileManager {
     public static Optional<Vector<Path>> listFiles(String dirPath){
@@ -27,5 +30,11 @@ public class FileManager {
         }
 
         return Optional.empty();
+    }
+
+
+    public static Path createFile(String path, String fileName) {
+        File file = new File(String.format("%s/%s/%s.xml", XML_PATH, path, fileName));
+        return file.toPath();
     }
 }

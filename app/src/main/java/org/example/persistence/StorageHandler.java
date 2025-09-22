@@ -2,7 +2,14 @@ package org.example.persistence;
 
 import org.example.managers.StoreManager;
 
-public interface StorageHandler {
-    void load(StoreManager storeManager);
-    void save(StoreManager storeManager);
+public abstract class StorageHandler {
+
+    private final StoreManager manager;
+
+    public StorageHandler(StoreManager manager) {
+        this.manager = manager;
+    }
+
+    public abstract void load();
+    public abstract void save();
 }

@@ -4,7 +4,7 @@ import jakarta.xml.bind.JAXBException;
 import org.example.managers.model.CustomerManager;
 import org.example.model.Customer;
 import org.example.persistence.xml.model.XCustomer;
-import org.example.persistence.xml.utils.XmlHelper;
+import org.example.persistence.xml.utils.XmlFacade;
 import org.example.utils.FileManager;
 
 import java.nio.file.Path;
@@ -13,8 +13,8 @@ import java.util.Vector;
 
 import static org.example.persistence.xml.XmlStorageHandler.XML_PATH;
 
-public class XCustomerLoader implements Loadable<Customer> {
-    private final XmlHelper<XCustomer> helper = new XmlHelper<>(XCustomer.class);
+public class XCustomerLoader implements Loadable<Customer>, Marshallable {
+    private final XmlFacade<XCustomer> helper = new XmlFacade<>(XCustomer.class);
     private final CustomerManager customerManager;
 
     public XCustomerLoader(CustomerManager customerManager) {
@@ -39,5 +39,19 @@ public class XCustomerLoader implements Loadable<Customer> {
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public boolean store() {
+        boolean result = true;
+        for (Customer item : customerManager.getItems().values()) {
+            try {
+                helper.marshall(XCustomer.mapToXCustomer(item), FileManager.createFile(XCustomer.HOME, item.getId()));
+            } catch (JAXBException e) {
+                System.out.println(e.getMessage());
+                result = false;
+            }
+        }
+        return result;
     }
 }

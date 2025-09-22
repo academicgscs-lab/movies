@@ -16,11 +16,12 @@ class LoaderTest {
 
     @Test
     void coldLoadTest(){
+        // TODO; fix failed test
         StoreManager controlStoreManager = getStoreManager();
-        StorageHandler handler = new XmlStorageHandler();
-        handler.save(controlStoreManager);
+        StorageHandler handler = new XmlStorageHandler(controlStoreManager);
+        handler.save();
         StoreManager storeManager = new StoreManager();
-        handler.load(storeManager);
+        handler.load();
 
         Customer[] customers = storeManager.getCustomerManager().getItems().values().toArray(new Customer[0]);
         Customer[] controlCustomers = controlStoreManager.getCustomerManager().getItems().values().toArray(new Customer[0]);

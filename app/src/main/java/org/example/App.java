@@ -9,12 +9,12 @@ public class App {
     public static String LOCAL_PATH = System.getProperty("user.dir");
 
     public static void main(String[] args) {
-        StorageHandler storageHandler = new XmlStorageHandler();
         StoreManager storeManager = new StoreManager();
-        storageHandler.load(storeManager);
+        StorageHandler storageHandler = new XmlStorageHandler(storeManager);
+        storageHandler.load();
 
         Mocker.mock(storeManager);
         new Controller(storeManager.getCustomerManager(), storeManager.getMovieManager()).run();
-        storageHandler.save(storeManager);
+        storageHandler.save();
     }
 }

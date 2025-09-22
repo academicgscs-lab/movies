@@ -8,12 +8,12 @@ import jakarta.xml.bind.Unmarshaller;
 import java.nio.file.Path;
 
 
-public class XmlHelper<T> {
+public class XmlFacade<T> {
 
     private Unmarshaller unmarshaller;
     private Marshaller marshaller;
 
-    public XmlHelper(Class<T> item) {
+    public XmlFacade(Class<T> item) {
         createContext(item);
     }
 
