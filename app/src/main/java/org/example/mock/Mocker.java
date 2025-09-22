@@ -15,8 +15,5 @@ public class Mocker {
         storeManager.borrowMovie(justiceLeague.id(), customer.getId(), 3);
         storeManager.borrowMovie(soul.id(), customer.getId(), 5);
         storeManager.borrowMovie(terminator.id(), customer.getId(), 1);
-        storeManager.borrowMovie(terminator.id(), customer.getId(), 4);
-        storeManager.borrowMovie(terminator.id(), customer.getId(), 2);
-        storeManager.borrowMovie(terminator.id(), customer.getId(), 5);
     }
 }

@@ -6,8 +6,6 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
-import org.example.managers.model.CustomerManager;
-import org.example.managers.model.MovieManager;
 import org.example.model.Customer;
 import org.example.model.Rental;
 

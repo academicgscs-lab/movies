@@ -14,12 +14,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class XMovieTest {
     @Test
-    void loadMovieTest() throws JAXBException, IOException {
+    void loadMovieTest() {
         StoreManager storeManager = new StoreManager();
         Movie createdSoul = storeManager.createMovie("Soul", 2);
 
-        StorageHandler handler = new XmlStorageHandler();
-        handler.load(storeManager);
+        StorageHandler handler = new XmlStorageHandler(storeManager);
+        handler.load();
         Collection<Movie> movies = storeManager.getMovieManager().getItems().values();
 
         assertTrue(movies.contains(createdSoul));
