@@ -17,6 +17,8 @@ import java.io.File;
 class Marshaller {
     public static String XML_PATH = String.format("%s/persistence/xml/", App.LOCAL_PATH);
 
+
+
     public void marshal(Movie movie) {
         try {
             JAXBContext context = JAXBContext.newInstance(XMovie.class);
